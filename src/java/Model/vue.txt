@@ -1,0 +1,43 @@
+create sequence seq_client start with 1;
+create table client(
+    id_client varchar default ('client'||nextval('seq_client')) primary key,
+    nom varchar,
+    adresse varchar,
+    contact varchar
+);
+
+alter table client add column date_de_naissance date ;
+------------------------------------------------------------------------------------------------------------------------------------------
+create sequence seq_genre start with 1;
+create table genre(
+    id_genre varchar default ('genre'||nextval('seq_genre')) primary key,
+    nom varchar
+);
+alter table client add column id_genre varchar references genre(id_genre);
+
+create sequence seq_vente start with 1;
+create table vente(
+    id_vente varchar default ('vente'||nextval('seq_vente')) primary key,
+    id_client varchar references client(id_client),
+    montant float,
+    date_vente date
+);
+
+
+create sequence seq_vente_detail start with 1;
+create table vente_detail(
+    id_vente_detail varchar default ('vente_detail'||nextval('seq_vente_detail')) primary key,
+    id_vente varchar references vente(id_vente),
+    id_mere varchar references mere(idmere),
+    quantite float,
+    prix_unitaire float
+);
+
+
+select vente_detail.*, from vente_detail 
+join vente
+on vente.id_vente = vente_detail.id_vente 
+join client 
+on client.id_client = vente.id_client
+join genre
+on genre.id_genre = client.id_genre
